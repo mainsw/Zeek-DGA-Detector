@@ -1,0 +1,3 @@
+dgaintel==2.3
+slack-sdk==3.19.2
+zat==0.4.4
