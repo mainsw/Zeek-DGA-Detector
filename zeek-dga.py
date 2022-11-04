@@ -7,6 +7,9 @@ import os
 from slack_sdk.webhook import WebhookClient
 from datetime import datetime
 
+
+##### Configuration START #####
+
 # Elasticsearch 연결 설정 (본인 환경에 맞게 수정)
 es = Elasticsearch('http://127.0.0.1:9200')
 es.info()
@@ -18,6 +21,15 @@ index_name = 'dga'
 webhookUrl = "https://your.webhook.url"
 webhook = WebhookClient(webhookUrl)
 
+# Zeek dns.log 경로 설정 (본인 환경에 맞게 수정)
+reader = zeek_log_reader.ZeekLogReader('/opt/zeek/logs/current/dns.log', tail=True)
+
+# DGA 도메인 탐지 txt 로그 경로 설정 (본인 환경에 맞게 수정)
+dgaTxtPath = "/home/admin/dga.txt"
+
+##### Configuration END #####
+
+
 # Elasticsearch Index 생성
 def make_index(es, index_name):
     if es.indices.exists(index=index_name):
@@ -26,11 +38,7 @@ def make_index(es, index_name):
         es.indices.create(index=index_name)
 make_index(es, index_name)
 
-# Zeek의 dns.log 읽기
-# dns.log 경로를 본인 환경에 맞게 수정
-reader = zeek_log_reader.ZeekLogReader('/opt/zeek/logs/current/dns.log', tail=True)
-
-# 각 줄마다 반복해가며 읽기.
+# Zeek dns.log 줄마다 반복하여 읽기.
 for row in reader.readrows():
     query = row['query']  
     timestamp = row['ts']
@@ -44,12 +52,12 @@ for row in reader.readrows():
     print(uid)
     print("=======================\n")
     
-    # query (도메인) 데이터의 딥 러닝 예측 결과, DGA 도메인 확률이 0.5 이상인 경우
+    # query (도메인) 데이터의 딥러닝 예측 결과, DGA 도메인 확률이 0.5 이상인 경우
     if prob>=0.5:
         print("DGA Domain Detected: "+query)
         
         # dga.txt에 DGA 탐지 기록
-        f = open("/home/admin/venv/dga.txt", "a")
+        f = open(dgaTxtPath, "a")
         f.write("query: "+query)
         f.write("\n")
         f.write(f"timestamp: {timestamp}")
