@@ -47,14 +47,20 @@ $ pip install elasticsearch==8.0.0
 
 <br/>zeek-dga.py를 환경에 맞게 수정합니다.
 ```sh
-# Elasticsearch 연결 설정
+# Elasticsearch 연결 설정 (본인 환경에 맞게 수정)
 es = Elasticsearch('http://127.0.0.1:9200')
 
-# Slack Webhook URL 설정
+# Elasticsearch Index Name 설정 (수정 가능, 중복되지 않도록 설정)
+index_name = 'dga'
+
+# Slack Webhook 설정 (본인 환경에 맞게 수정)
 webhookUrl = "https://your.webhook.url"
 
-# Zeek dns.log 경로 설정
+# Zeek dns.log 경로 설정 (본인 환경에 맞게 수정)
 reader = zeek_log_reader.ZeekLogReader('/opt/zeek/logs/current/dns.log', tail=True)
+
+# DGA 도메인 탐지 txt 로그 경로 설정 (본인 환경에 맞게 수정)
+dgaTxtPath = "/home/admin/dga.txt"
 ```
 
 <br/>zeek-dga.py를 실행합니다.
