@@ -16,7 +16,7 @@ Zeek에서 생성하는 DNS 로그 데이터를 활용하여, DGA 도메인 실�
 <br/><br/>
 
 # Requirements
-Python 3 기반으로 만들어졌습니다.
+Python 3.7+ 이상이 필요합니다.
 
 Python 3.7.4 에서 테스트되었습니다.
 
