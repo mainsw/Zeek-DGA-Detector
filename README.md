@@ -1,5 +1,5 @@
 # Zeek DGA Detector
-DGA Domain Detector utilizing Zeek DNS logs
+DGA Domain Detector utilizing Zeek DNS logs and Deep Learning
 <br/><br/>
 
 ## Overview
