@@ -2,20 +2,20 @@
 DGA Domain Detector utilizing Zeek DNS logs
 <br/><br/>
 
-# Overview
+## Overview
 Zeek에서 생성하는 DNS 로그 데이터를 활용하여, DGA 도메인 실시간 탐지 및 경고를 수행하는 도구입니다.
 
 딥러닝 기반으로 DGA 도메인을 예측하고, 탐지시 텍스트 파일 및 Elasticsearch에 기록하며, Slack 경고를 생성합니다.
 <br/><br/>
 
-# Function
+## Features
 - 딥러닝 기반 DGA 도메인 탐지
 - txt 탐지 기록
 - Elasticsearch 탐지 기록
 - Slack 탐지 알림
 <br/><br/>
 
-# Requirements
+## Requirements
 Python 3.7+ 이상이 필요합니다.
 
 Python 3.7.4 에서 테스트되었습니다.
@@ -31,7 +31,7 @@ Python 3.7.4 에서 테스트되었습니다.
 또한, Zeek 로그 파일이 저장되고 있는 환경 내부에서 실행해야 합니다.
 <br/><br/>
 
-# Installation
+## Installation
 git clone한 후 pip를 사용하여 필요한 모듈을 설치합니다.
 ```sh
 $ git clone https://github.com/mainsw/zeek-dga-detector
