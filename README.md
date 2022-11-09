@@ -7,6 +7,8 @@ Zeek에서 생성하는 DNS 로그 데이터를 활용하여, DGA 도메인 실�
 
 딥러닝 기반으로 DGA 도메인을 예측하고, 탐지시 텍스트 파일 및 Elasticsearch에 기록하며, Slack 경고를 생성합니다.
 <br/><br/>
+![alt text](https://github.com/mainsw/Zeek-DGA-Detector/blob/main/zeek-dga-structure.png?raw=true)
+<br/><br/>
 
 ## Features
 - 딥러닝 기반 DGA 도메인 탐지
