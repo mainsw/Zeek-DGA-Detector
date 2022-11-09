@@ -30,7 +30,7 @@ dgaTxtPath = "/home/admin/dga.txt"
 ##### Configuration END #####
 
 
-# Elasticsearch Index 생성
+# Elasticsearch Index 생성, 이미 있는 경우 pass
 def make_index(es, index_name):
     if es.indices.exists(index=index_name):
         pass
