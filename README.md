@@ -34,38 +34,32 @@ Python 3.7.4 에서 테스트되었습니다.
 <br/><br/>
 
 ## Installation
-git clone한 후 pip를 사용하여 필요한 모듈을 설치합니다.
+Setuptools가 사전에 설치되었다고 가정합니다.
+
+다음과 같이 설치를 진행합니다.
+
 ```sh
-$ git clone https://github.com/mainsw/zeek-dga-detector
-$ cd zeek-dga-detector
-$ pip install -r requirements.txt
+$ sudo pip install git+https://github.com/mainsw/zeek-dga-detector.git
 
 # Elasticsearch 7 버전인 경우
-$ pip install elasticsearch==7.0.0
+$ sudo pip install elasticsearch==7.0.0
 
 # Elasticsearch 8 버전인 경우
-$ pip install elasticsearch==8.0.0
+$ sudo pip install elasticsearch==8.0.0
 ```
 
-<br/>zeek-dga.py를 환경에 맞게 수정합니다.
+
+<br/>다음 명령으로 실행에 필요한 인자와 설명을 확인할 수 있습니다.
 ```sh
-# Elasticsearch 연결 설정 (본인 환경에 맞게 수정)
-es = Elasticsearch('http://127.0.0.1:9200')
+$ zeekdga.py -h
 
-# Elasticsearch Index Name 설정 (수정 가능, 중복되지 않도록 설정)
-index_name = 'dga'
+프로그램 작동을 위한 인자를 다음과 같이 설정해 주세요.
 
-# Slack Webhook 설정 (본인 환경에 맞게 수정)
-webhookUrl = "https://your.webhook.url"
-
-# Zeek dns.log 경로 설정 (본인 환경에 맞게 수정)
-reader = zeek_log_reader.ZeekLogReader('/opt/zeek/logs/current/dns.log', tail=True)
-
-# DGA 도메인 탐지 txt 로그 경로 설정 (본인 환경에 맞게 수정)
-dgaTxtPath = "/home/admin/dga.txt"
-```
-
-<br/>zeek-dga.py를 실행합니다.
-```sh
-$ python zeek-dga.py
+optional arguments:
+  -h, --help         show this help message and exit
+  --es ES            Elasticsearch 연결 설정 (default: http://127.0.0.1:9200)
+  --index INDEX      Elasticsearch Index Name 설정 (default: dga)
+  --zeekdns ZEEKDNS  Zeek current/dns.log 경로 설정 (default: /opt/zeek/logs/current/dns.log)
+  --txtlog TXTLOG    [required] DGA 도메인 탐지 txt 로그 경로 설정 (ex: /home/admin/dgalog.txt)
+  --webhook WEBHOOK  [required] Slack Webhook URL 설정 (ex: https://hooks.slack.com/services/XXX)
 ```
