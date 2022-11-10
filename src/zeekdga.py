@@ -80,8 +80,9 @@ for row in reader.readrows():
     probStr = str(prob)
     tsStr = timestamp.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
     print("\n=======================")
+    print("timestamp: "+tsStr)
     print("query: "+query)
-    print("prob: "+prob)
+    print("prob: "+probStr)
     print("uid: "+uid)
     print("=======================\n")
     
