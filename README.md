@@ -4,6 +4,7 @@ DGA Domain Detector utilizing Zeek DNS logs and Deep Learning
 
 ## Demo
 ![이미지 로드에 실패했습니다. 리포지토리에서 직접 확인해 주세요.](https://github.com/mainsw/Zeek-DGA-Detector/blob/main/img/detection-demo.gif?raw=true)
+DGA Domain Source: [Netlab 360 DGA Domain List](https://data.netlab.360.com/feeds/dga/dga.txt)
 <br/><br/>
 
 ## Overview
