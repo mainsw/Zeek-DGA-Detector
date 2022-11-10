@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='zeekdga',
-    version='0.0.1',
+    version='0.0.2',
     description='DGA Domain Detector utilizing Zeek DNS logs and Deep Learning',
     author='mainsw',
     url='https://github.com/mainsw/Zeek-DGA-Detector.git',
