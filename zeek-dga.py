@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from zat import zeek_log_reader
 from dgaintel import get_prediction
 from dgaintel import get_prob
