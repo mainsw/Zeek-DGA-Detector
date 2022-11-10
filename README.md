@@ -39,19 +39,17 @@ Setuptools가 사전에 설치되었다고 가정합니다.
 다음과 같이 설치를 진행합니다.
 
 ```sh
-$ sudo pip install git+https://github.com/mainsw/zeek-dga-detector.git
-
 # Elasticsearch 7 버전인 경우
-$ sudo pip install elasticsearch==7.0.0
+$ sudo pip install git+https://github.com/mainsw/zeek-dga-detector.git elasticsearch==7.0.0
 
 # Elasticsearch 8 버전인 경우
-$ sudo pip install elasticsearch==8.0.0
+$ sudo pip install git+https://github.com/mainsw/zeek-dga-detector.git elasticsearch==8.0.0
 ```
 
 
 <br/>다음 명령으로 실행에 필요한 인자와 설명을 확인할 수 있습니다.
 ```sh
-$ zeekdga.py -h
+$ sudo zeekdga.py -h
 
 프로그램 작동을 위한 인자를 다음과 같이 설정해 주세요.
 
