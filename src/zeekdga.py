@@ -103,7 +103,7 @@ for row in reader.readrows():
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': timestamp, 'probability': prob, 'uid': uid}
+        doc1 = {'query': query, 'timestamp': timestamp, 'probability': probStr, 'uid': uid}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
