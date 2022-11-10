@@ -24,7 +24,7 @@ webhookUrl = "https://your.webhook.url"
 webhook = WebhookClient(webhookUrl)
 
 # Zeek dns.log 경로 설정 (본인 환경에 맞게 수정)
-reader = zeek_log_reader.ZeekLogReader('/opt/zeek/logs/current/dns.log', tail=True)
+dnsLogPath = "/opt/zeek/logs/current/dns.log"
 
 # DGA 도메인 탐지 txt 로그 경로 설정 (본인 환경에 맞게 수정)
 dgaTxtPath = "/home/admin/dga.txt"
@@ -49,6 +49,7 @@ def make_index(es, index_name):
 make_index(es, index_name)
 
 # Zeek dns.log 줄마다 반복하여 읽기.
+reader = zeek_log_reader.ZeekLogReader(dnsLogPath, tail=True)
 for row in reader.readrows():
     query = row['query']  
     timestamp = row['ts']
