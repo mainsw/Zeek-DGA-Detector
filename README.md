@@ -93,17 +93,29 @@ zeekdga.py --txtlog /home/admin/dgalog.txt --webhook https://hooks.slack.com/ser
 
 ```sh
 === Configuration ===
-http://127.0.0.1:9200
-dga
-https://hooks.slack.com/services/XXX
-/opt/zeek/logs/current/dns.log
-/home/admin/dgalog.txt
+--es: http://127.0.0.1:9200
+--index: dga
+--webhook: https://hooks.slack.com/services/XXX
+--zeekdns: /opt/zeek/logs/current/dns.log
+--txtlog: /home/admin/dgalog.txt
 === Configuration ===
+
 Successfully monitoring /opt/zeek/logs/current/dns.log...
 
 =======================
-storage.googleapis.com
-0.0002733171
-CrUbqN2fpJEOjRP0Gk
+timestamp: 2022년 11월 11일 04시 21분 49.381923
+query: naver.com
+prob: 0.0015445054
+uid: CVlJrl2NjOiyAFLdB9
 =======================
+
+=======================
+timestamp: 2022년 11월 11일 04시 22분 47.710369
+query: nbnmep.com
+prob: 0.5765742
+uid: Co49Rr3GScegSM6ka2
+=======================
+
+DGA Domain Detected: nbnmep.com
+
 ```
