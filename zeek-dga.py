@@ -8,26 +8,47 @@ from elasticsearch import helpers
 import os
 from slack_sdk.webhook import WebhookClient
 from datetime import datetime
+import argparse
 
 
 ##### Configuration START #####
 
+# 인스턴스 생성
+parser = argparse.ArgumentParser(description='프로그램 작동을 위한 인자를 다음과 같이 설정해 주세요.')
+
+# 입력받을 인자 설정
+parser.add_argument('--es',        type=str,   default="http://127.0.0.1:9200", help="Elasticsearch 연결 설정 (default: http://127.0.0.1:9200)")
+parser.add_argument('--index',     type=str,   default="dga", help="Elasticsearch Index Name 설정 (default: dga)")
+parser.add_argument('--zeekdns',   type=str,   default="/opt/zeek/logs/current/dns.log", help="Zeek current/dns.log 경로 설정 (default: /opt/zeek/logs/current/dns.log)")
+parser.add_argument('--txtlog',    type=str, help="[required] DGA 도메인 탐지 txt 로그 경로 설정 (ex: /home/admin/dgalog.txt)", required=True)
+parser.add_argument('--webhook',   type=str, help="[required] Slack Webhook URL 설정 (ex: https://hooks.slack.com/services/XXX)", required=True)
+
+# args 에 위 내용 저장
+args = parser.parse_args()
+
+# 입력받은 인자 출력
+print("=== Configuration ===")
+print(args.es)
+print(args.index)
+print(args.webhook)
+print(args.zeekdns)
+print(args.txtlog)
+print("=== Configuration ===")
+
 # Elasticsearch 연결 설정 (본인 환경에 맞게 수정)
-es = Elasticsearch('http://127.0.0.1:9200')
-es.info()
+es = Elasticsearch(args.es)
 
 # Elasticsearch Index Name 설정 (수정 가능, 중복되지 않도록 설정)
-index_name = 'dga'
+index_name = args.index
 
 # Slack Webhook 설정 (본인 환경에 맞게 수정)
-webhookUrl = "https://your.webhook.url"
-webhook = WebhookClient(webhookUrl)
+webhook = WebhookClient(args.webhook)
 
 # Zeek dns.log 경로 설정 (본인 환경에 맞게 수정)
-dnsLogPath = "/opt/zeek/logs/current/dns.log"
+dnsLogPath = args.zeekdns
 
 # DGA 도메인 탐지 txt 로그 경로 설정 (본인 환경에 맞게 수정)
-dgaTxtPath = "/home/admin/dga.txt"
+dgaTxtPath = args.txtlog
 
 ##### Configuration END #####
 
