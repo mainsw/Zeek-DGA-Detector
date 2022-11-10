@@ -1,3 +1,4 @@
+#!python3
 # -*- coding: utf-8 -*-
 
 from zat import zeek_log_reader
