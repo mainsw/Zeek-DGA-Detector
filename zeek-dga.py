@@ -31,6 +31,14 @@ dgaTxtPath = "/home/admin/dga.txt"
 
 ##### Configuration END #####
 
+# DGA 도메인 탐지 txt 로그 파일 생성, 이미 있는 경우 pass
+def make_txt(dgaTxtPath):
+    if (os.path.isfile(dgaTxtPath)):
+        pass
+    else:
+        f = open(dgaTxtPath, 'w')
+        f.close()
+make_txt(dgaTxtPath)
 
 # Elasticsearch Index 생성, 이미 있는 경우 pass
 def make_index(es, index_name):
@@ -69,6 +77,7 @@ for row in reader.readrows():
         f.write("uid "+uid)
         f.write("\n")
         f.write("\n")
+        f.close()
         
         # Elasticsearch에 DGA 탐지 기록
         doc1 = {'query': query, 'timestamp': timestamp, 'probability': prob, 'uid': uid}
