@@ -65,7 +65,7 @@ pip3 install git+https://github.com/mainsw/zeek-dga-detector.git elasticsearch==
 
 <br/>설치하면서 zeekdga.py가 PATH에 복사됩니다.
 
-간단히 다음 명령으로 Zeek-DGA-Detector를 실행하여, 작동에 필요한 인자와 설명을 확인할 수 있습니다.
+간단히 다음 명령으로 Zeek DGA Detector를 실행하여, 작동에 필요한 인자와 설명을 확인할 수 있습니다.
 ```sh
 zeekdga.py --help
 ```
