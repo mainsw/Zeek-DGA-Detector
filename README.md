@@ -1,5 +1,7 @@
 # Zeek DGA Detector
 DGA Domain Detector utilizing Zeek DNS logs and Deep Learning
+
+Zeek DNS 로그와 딥러닝을 활용하는 DGA 도메인 탐지기
 <br/><br/>
 
 ## Demo
