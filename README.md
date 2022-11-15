@@ -53,16 +53,16 @@ Zeek에서 생성하는 DNS 로그 데이터를 활용하여, DGA 도메인 실�
 <br/><br/>
 
 ## Installation
-루트 권한으로 진행합니다.
+루트 계정으로 진행합니다.
 
 다음과 같이 설치를 진행합니다.
 
 ```sh
 # Elasticsearch 7 버전인 경우
-pip3 install git+https://github.com/mainsw/zeek-dga-detector.git elasticsearch==7.0.0
+pip3 install git+https://github.com/mainsw/zeek-dga-detector@main elasticsearch==7.0.0
 
 # Elasticsearch 8 버전인 경우
-pip3 install git+https://github.com/mainsw/zeek-dga-detector.git elasticsearch==8.0.0
+pip3 install git+https://github.com/mainsw/zeek-dga-detector@main elasticsearch==8.0.0
 ```
 
 <br/>설치하면서 zeekdga.py가 PATH에 복사됩니다.
