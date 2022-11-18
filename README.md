@@ -44,6 +44,7 @@ Zeek에서 생성하는 DNS 로그 데이터를 활용하여, DGA 도메인 실�
 - dgaintel
 - elasticsearch
 - slack-sdk
+- pytz
 
 # 설치에 필요
 - setuptools
