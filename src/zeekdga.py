@@ -79,6 +79,7 @@ for row in reader.readrows():
     prob = get_prob(query)
     probStr = str(prob)
     tsStr = timestamp.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
+    tsUTC = timestamp.astimezone(pytz.UTC)
     print("\n=======================")
     print("timestamp: "+tsStr)
     print("query: "+query)
@@ -104,7 +105,7 @@ for row in reader.readrows():
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': timestamp, 'probability': probStr, 'uid': uid}
+        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
