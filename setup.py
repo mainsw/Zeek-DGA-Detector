@@ -11,8 +11,8 @@ setup(
     install_requires=[
         'dgaintel==2.3',
         'slack-sdk==3.19.2',
-        'zat==0.4.4'
-        'pytz==2022.6'
+        'zat==0.4.4',
+        'pytz==2022.6',
         'python-whois==0.8.0'
     ],
     python_requires='>=3.7',
