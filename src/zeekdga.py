@@ -10,6 +10,7 @@ import os
 from slack_sdk.webhook import WebhookClient
 from datetime import datetime
 import argparse
+import whois
 
 
 ##### Configuration START #####
@@ -90,6 +91,8 @@ for row in reader.readrows():
     # query (도메인) 데이터의 딥러닝 예측 결과, DGA 도메인 확률이 0.5 이상인 경우
     if prob>=0.5:
         print("DGA Domain Detected: "+query)
+        whoisQuery = whois.whois(query)
+        print(whoisQuery)
         
         # dga.txt에 DGA 탐지 기록
         f = open(dgaTxtPath, "a")
@@ -116,7 +119,7 @@ for row in reader.readrows():
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\n========================="
+                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\nwhois: "+whoisQuery+"\n========================="
                     }
                 }
             ]
