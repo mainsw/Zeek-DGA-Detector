@@ -13,6 +13,7 @@ setup(
         'slack-sdk==3.19.2',
         'zat==0.4.4'
         'pytz==2022.6'
+        'python-whois==0.8.0'
     ],
     python_requires='>=3.7',
     extras_require={'es7': ['elasticsearch==7.0.0'], 'es8': ['elasticsearch==8.0.0']},
