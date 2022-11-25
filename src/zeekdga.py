@@ -12,6 +12,7 @@ from datetime import datetime
 import argparse
 import pytz
 import whois
+import json
 
 
 ##### Configuration START #####
@@ -120,7 +121,7 @@ for row in reader.readrows():
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\nwhois: "+whoisQuery+"\n========================="
+                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\nCreation Date: "+whoisQuery.creation_date+"\n========================="
                     }
                 }
             ]
