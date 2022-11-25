@@ -1,3 +1,5 @@
 build
 dist
 zeekdga.egg-info
+__pycache__
+test.py
