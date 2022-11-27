@@ -79,6 +79,10 @@ for row in reader.readrows():
     query = row['query']  
     timestamp = row['ts']
     uid = row['uid']
+    origIP = row['id.orig_h']
+    respIP = row['id.resp_h']
+    qtype = row['qtype_name']
+    answers = row['answers']
     prob = get_prob(query)
     probStr = str(prob)
     tsStr = timestamp.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
@@ -88,13 +92,21 @@ for row in reader.readrows():
     print("query: "+query)
     print("prob: "+probStr)
     print("uid: "+uid)
+    print("origin: "+origIP)
+    print("response: "+respIP)
+    print("qtype: "+qtype)
+    print("answers: "+answers)
     print("=======================\n")
     
     # query (도메인) 데이터의 딥러닝 예측 결과, DGA 도메인 확률이 0.5 이상인 경우
     if prob>=0.5:
         print("DGA Domain Detected: "+query)
         whoisQuery = whois.whois(query)
-        print(whoisQuery)
+        # whoisQueryStr = json.dumps(whoisQuery)
+        # print(whoisQuery)
+        whoisCrDate = whoisQuery.creation_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
+        whoisExDate = whoisQuery.expiration_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
+        whoisRegistrar = whoisQuery.registrar
         
         # dga.txt에 DGA 탐지 기록
         f = open(dgaTxtPath, "a")
@@ -121,7 +133,7 @@ for row in reader.readrows():
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\nCreation Date: "+whoisQuery.creation_date+"\n========================="
+                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\nid.orig_h: "+origIP+"\nid.resp_h: "+respIP+"\nqtype_name: "+qtype+"\nanswers: "+answers+"\ncreation date: "+whoisCrDate+"\nexpiration date: "+whoisExDate+"\nregistrar: "+whoisRegistrar+"\n========================="
                     }
                 }
             ]
