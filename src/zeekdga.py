@@ -13,9 +13,16 @@ import argparse
 import pytz
 import whois
 import json
+import pprint
 
 
 ##### Configuration START #####
+
+pp = pprint.PrettyPrinter(indent=4)
+
+# Timezone List
+pp.pprint("=== Timezones ===")
+pp.pprint(pytz.all_timezones)
 
 # 인스턴스 생성
 parser = argparse.ArgumentParser(description='프로그램 작동을 위한 인자를 다음과 같이 설정해 주세요.')
@@ -26,7 +33,7 @@ parser.add_argument('--index',     type=str,   default="dga", help="Elasticsearc
 parser.add_argument('--zeekdns',   type=str,   default="/opt/zeek/logs/current/dns.log", help="Zeek current/dns.log 경로 설정 (default: /opt/zeek/logs/current/dns.log)")
 parser.add_argument('--txtlog',    type=str, help="[required] DGA 도메인 탐지 txt 로그 경로 설정 (ex: /home/admin/dgalog.txt)", required=True)
 parser.add_argument('--webhook',   type=str, help="[required] Slack Webhook URL 설정 (ex: https://hooks.slack.com/services/XXX)", required=True)
-parser.add_argument('--timezone',  type=str, help="[required] Current Timezone Setting (ex: Asia/Seoul")
+parser.add_argument('--timezone',  type=str, help="[required] 현재 Timezone 설정, 상단에 출력된 리스트 참조 (ex: Asia/Seoul)")
 
 # args 에 위 내용 저장
 args = parser.parse_args()
