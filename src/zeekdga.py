@@ -54,6 +54,11 @@ dnsLogPath = args.zeekdns
 # DGA 도메인 탐지 txt 로그 경로 설정 (본인 환경에 맞게 수정)
 dgaTxtPath = args.txtlog
 
+# Timezone Conversion
+tz = pytz.timezone('Asia/Seoul')
+def toUTC(d):
+    return tz.normalize(tz.localize(d)).astimezone(pytz.utc)
+
 ##### Configuration END #####
 
 # DGA 도메인 탐지 txt 로그 파일 생성, 이미 있는 경우 pass
@@ -86,7 +91,7 @@ for row in reader.readrows():
     prob = get_prob(query)
     probStr = str(prob)
     tsStr = timestamp.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
-    tsUTC = timestamp.astimezone(pytz.UTC)
+    tsUTC = toUTC(timestamp)
     print("\n=======================")
     print("timestamp: "+tsStr)
     print("query: "+query)
@@ -107,6 +112,9 @@ for row in reader.readrows():
         whoisCrDate = whoisQuery.creation_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
         whoisExDate = whoisQuery.expiration_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
         whoisRegistrar = whoisQuery.registrar
+        print("[WHOIS] Creation Date: "+ whoisCrDate)
+        print("[WHOIS] Expiration Date: "+ whoisExDate)
+        print("[WHOIS] Registrar: "+ whoisRegistrar)
         
         # dga.txt에 DGA 탐지 기록
         f = open(dgaTxtPath, "a")
@@ -136,7 +144,7 @@ for row in reader.readrows():
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid}
+        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_creation_date': whoisQuery.creation_date, 'whois_expiration_date': whoisQuery.expiration_date, 'whois_registrar': whoisQuery.registrar}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
