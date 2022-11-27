@@ -92,9 +92,9 @@ for row in reader.readrows():
     print("query: "+query)
     print("prob: "+probStr)
     print("uid: "+uid)
-    print("origin: "+origIP)
-    print("response: "+respIP)
-    print("qtype: "+qtype)
+    print("id.orig: "+origIP)
+    print("id.resp: "+respIP)
+    print("qtype_name: "+qtype)
     print("answers: "+answers)
     print("=======================\n")
     
