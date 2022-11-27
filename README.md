@@ -75,24 +75,35 @@ zeekdga.py --help
 ```
 
 ```sh
+'=== Timezones ==='
+[   'Africa/Abidjan',
+    'Africa/Accra',
+    'Africa/Addis_Ababa',
+	....]
+  
+usage: zeekdga.py [-h] [--es ES] [--index INDEX] [--zeekdns ZEEKDNS] --txtlog
+                  TXTLOG --webhook WEBHOOK [--timezone TIMEZONE]
+                  
 프로그램 작동을 위한 인자를 다음과 같이 설정해 주세요.
 
 optional arguments:
-  -h, --help         show this help message and exit
-  --es ES            Elasticsearch 연결 설정 (default: http://127.0.0.1:9200)
-  --index INDEX      Elasticsearch Index Name 설정 (default: dga)
-  --zeekdns ZEEKDNS  Zeek current/dns.log 경로 설정 (default: /opt/zeek/logs/current/dns.log)
-  --txtlog TXTLOG    [required] DGA 도메인 탐지 txt 로그 경로 설정 (ex: /home/admin/dgalog.txt)
-  --webhook WEBHOOK  [required] Slack Webhook URL 설정 (ex: https://hooks.slack.com/services/XXX)
+  -h, --help          show this help message and exit
+  --es ES             Elasticsearch 연결 설정 (default: http://127.0.0.1:9200)
+  --index INDEX       Elasticsearch Index Name 설정 (default: dga)
+  --zeekdns ZEEKDNS   Zeek current/dns.log 경로 설정 (default: /opt/zeek/logs/current/dns.log)
+  --txtlog TXTLOG     [required] DGA 도메인 탐지 txt 로그 경로 설정 (ex: /home/admin/dgalog.txt)
+  --webhook WEBHOOK   [required] Slack Webhook URL 설정 (ex: https://hooks.slack.com/services/XXX)
+  --timezone TIMEZONE [required] 현재 Timezone 설정, 상단에 출력된 리스트 참조 (ex: Asia/Seoul)
+  
 ```
 <br/>--es, --index, --zeekdns는 설정하지 않으면 기본값으로 적용됩니다.
 
---txtlog, --webhook은 반드시 직접 설정해야 합니다.
+--txtlog, --webhook, --timezone은 반드시 직접 설정해야 합니다.
 
 다음과 같이 적절한 인자와 함께 실행하면 끝입니다. 모든 기능이 작동합니다.
 
 ```sh
-zeekdga.py --txtlog /home/admin/dgalog.txt --webhook https://hooks.slack.com/services/XXX
+zeekdga.py --txtlog /home/admin/dgalog.txt --webhook https://hooks.slack.com/services/XXX --timezone Asia/Seoul
 ```
 
 ```sh
@@ -102,24 +113,37 @@ zeekdga.py --txtlog /home/admin/dgalog.txt --webhook https://hooks.slack.com/ser
 --webhook: https://hooks.slack.com/services/XXX
 --zeekdns: /opt/zeek/logs/current/dns.log
 --txtlog: /home/admin/dgalog.txt
+--timezone: Asia/Seoul
 === Configuration ===
 
 Successfully monitoring /opt/zeek/logs/current/dns.log...
 
 =======================
-timestamp: 2022년 11월 11일 04시 21분 49.381923
+timestamp: 2022년 11월 27일 04시 21분 49.381923
 query: naver.com
 prob: 0.0015445054
 uid: CVlJrl2NjOiyAFLdB9
+id.orig: 192.168.0.1
+id.resp: 1.1.1.1
+qtype_name: -
+answers: 321.456.789.0
 =======================
 
 =======================
-timestamp: 2022년 11월 11일 04시 22분 47.710369
+timestamp: 2022년 11월 27일 04시 22분 47.710369
 query: nbnmep.com
 prob: 0.5765742
-uid: Co49Rr3GScegSM6ka2
+uid: CwYEnU2gvOFRo5rq3k
+id.orig: 192.168.0.1
+id.resp: 1.1.1.1
+qtype_name: -
+answers: 123.456.789.0
 =======================
 
 DGA Domain Detected: nbnmep.com
+[WHOIS Domain] Creation Date: 2020년 07월 07일 18시 11분 25.000000
+[WHOIS Domain] Expiration Date: 2023년 07월 07일 18시 11분 25.000000
+[WHOIS Domain] Registrar: Verisign Security and Stability
+[WHOIS IP] Country: US
 
 ```
