@@ -26,6 +26,7 @@ parser.add_argument('--index',     type=str,   default="dga", help="Elasticsearc
 parser.add_argument('--zeekdns',   type=str,   default="/opt/zeek/logs/current/dns.log", help="Zeek current/dns.log 경로 설정 (default: /opt/zeek/logs/current/dns.log)")
 parser.add_argument('--txtlog',    type=str, help="[required] DGA 도메인 탐지 txt 로그 경로 설정 (ex: /home/admin/dgalog.txt)", required=True)
 parser.add_argument('--webhook',   type=str, help="[required] Slack Webhook URL 설정 (ex: https://hooks.slack.com/services/XXX)", required=True)
+parser.add_argument('--timezone',  type=str, help="[required] Current Timezone Setting (ex: Asia/Seoul")
 
 # args 에 위 내용 저장
 args = parser.parse_args()
@@ -37,6 +38,7 @@ print("--index: "+args.index)
 print("--webhook: "+args.webhook)
 print("--zeekdns: "+args.zeekdns)
 print("--txtlog: "+args.txtlog)
+print("--timezone: "+args.timezone)
 print("=== Configuration ===\n")
 
 # Elasticsearch 연결 설정 (본인 환경에 맞게 수정)
@@ -55,7 +57,7 @@ dnsLogPath = args.zeekdns
 dgaTxtPath = args.txtlog
 
 # Timezone Conversion
-tz = pytz.timezone('Asia/Seoul')
+tz = pytz.timezone(args.timezone)
 def toUTC(d):
     return tz.normalize(tz.localize(d)).astimezone(pytz.utc)
 
@@ -107,14 +109,16 @@ for row in reader.readrows():
     if prob>=0.5:
         print("DGA Domain Detected: "+query)
         whoisQuery = whois.whois(query)
+        whoisIPQuery = whois.whois(answers)
         # whoisQueryStr = json.dumps(whoisQuery)
         # print(whoisQuery)
         whoisCrDate = whoisQuery.creation_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
         whoisExDate = whoisQuery.expiration_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
         whoisRegistrar = whoisQuery.registrar
-        print("[WHOIS] Creation Date: "+ whoisCrDate)
-        print("[WHOIS] Expiration Date: "+ whoisExDate)
-        print("[WHOIS] Registrar: "+ whoisRegistrar)
+        print("[WHOIS Domain] Creation Date: "+ whoisCrDate)
+        print("[WHOIS Domain] Expiration Date: "+ whoisExDate)
+        print("[WHOIS Domain] Registrar: "+ whoisRegistrar)
+        print("[WHOIS IP] Country: "+ whoisIPQuery.country)
         
         # dga.txt에 DGA 탐지 기록
         f = open(dgaTxtPath, "a")
@@ -134,17 +138,19 @@ for row in reader.readrows():
         f.write("\n")
         f.write("answers: "+answers)
         f.write("\n")
-        f.write(f"creation date: {whoisCrDate}")
+        f.write(f"[WHOIS Domain] Creation Date: {whoisCrDate}")
         f.write("\n")
-        f.write(f"expiration date: {whoisExDate}")
+        f.write(f"[WHOIS Domain] Expiration Date: {whoisExDate}")
         f.write("\n")
-        f.write("registrar: "+whoisRegistrar)
+        f.write("[WHOIS Domain] Registrar: "+whoisRegistrar)
+        f.write("\n")
+        f.write("[WHOIS IP] Country: "+whoisIPQuery.country)
         f.write("\n")
         f.write("\n")
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_creation_date': whoisQuery.creation_date, 'whois_expiration_date': whoisQuery.expiration_date, 'whois_registrar': whoisQuery.registrar}
+        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPQuery.country}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
@@ -155,7 +161,7 @@ for row in reader.readrows():
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\nid.orig_h: "+origIP+"\nid.resp_h: "+respIP+"\nqtype_name: "+qtype+"\nanswers: "+answers+"\ncreation date: "+whoisCrDate+"\nexpiration date: "+whoisExDate+"\nregistrar: "+whoisRegistrar+"\n========================="
+                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\nid.orig_h: "+origIP+"\nid.resp_h: "+respIP+"\nqtype_name: "+qtype+"\nanswers: "+answers+"\n[WHOIS Domain] Creation date: "+whoisCrDate+"\n[WHOIS Domain] Expiration date: "+whoisExDate+"\n[WHOIS Domain] Registrar: "+whoisRegistrar+"\n[WHOIS IP] Country: "+whoisIPQuery.country+"\n========================="
                     }
                 }
             ]
