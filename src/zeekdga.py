@@ -122,13 +122,10 @@ for row in reader.readrows():
         whoisCrDate = whoisQuery.creation_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
         whoisExDate = whoisQuery.expiration_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
         whoisUpDate = whoisQuery.updated_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
-        whoisNameServer = whoisQuery.name_servers
         whoisRegistrar = whoisQuery.registrar
         print("[WHOIS Domain] Creation Date: "+ whoisCrDate)
         print("[WHOIS Domain] Expiration Date: "+ whoisExDate)
-        print("[WHOIS Domain] Updated Date: "+ whoisUpDate)
         print("[WHOIS Domain] Registrar: "+ whoisRegistrar)
-        print("[WHOIS Domain] Name Servers: "+ whoisNameServer)
         print("[WHOIS IP] Country: "+ whoisIPQuery.country)
         
         # dga.txt에 DGA 탐지 기록
@@ -157,15 +154,13 @@ for row in reader.readrows():
         f.write("\n")
         f.write("[WHOIS Domain] Registrar: "+whoisRegistrar)
         f.write("\n")
-        f.write("[WHOIS Domain] Name Servers: "+whoisNameServer)
-        f.write("\n")
         f.write("[WHOIS IP] Country: "+whoisIPQuery.country)
         f.write("\n")
         f.write("\n")
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPQuery.country, 'whois_domain_updated_date': whoisQuery.updated_date, 'whois_domain_name_servers': whoisNameServer}
+        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPQuery.country, 'whois_domain_updated_date': whoisQuery.updated_date}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
@@ -189,7 +184,6 @@ for row in reader.readrows():
                         "\n[WHOIS Domain] Expiration date: "+whoisExDate+
                         "\n[WHOIS Domain] Updated date: "+whoisUpDate+
                         "\n[WHOIS Domain] Registrar: "+whoisRegistrar+
-                        "\n[WHOIS Domain] Name Servers: "+whoisNameServer+
                         "\n[WHOIS IP] Country: "+whoisIPQuery.country+
                         "\n========================="
                     }
