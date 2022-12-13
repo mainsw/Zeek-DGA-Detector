@@ -94,7 +94,9 @@ for row in reader.readrows():
     timestamp = row['ts']
     uid = row['uid']
     origIP = row['id.orig_h']
+    origPORT = row['id.orig_p']
     respIP = row['id.resp_h']
+    respPORT = row['id.resp_p']
     qtype = row['qtype_name']
     answers = row['answers']
     prob = get_prob(query)
@@ -106,8 +108,8 @@ for row in reader.readrows():
     print("query: "+query)
     print("prob: "+probStr)
     print("uid: "+uid)
-    print("id.orig: "+origIP)
-    print("id.resp: "+respIP)
+    print("id.orig_h+p: "+origIP+":"+str(origPORT))
+    print("id.resp_h+p: "+respIP+":"+str(respPORT))
     print("qtype_name: "+qtype)
     print("answers: "+answers)
     print("=======================\n")
@@ -164,6 +166,10 @@ for row in reader.readrows():
         f.write("\n")
         f.write("id.resp_h: "+respIP)
         f.write("\n")
+        f.write("id.orig_p: "+str(origPORT))
+        f.write("\n")
+        f.write("id.resp_p: "+str(respPORT))
+        f.write("\n")
         f.write("qtype_name: "+qtype)
         f.write("\n")
         f.write("answers: "+answers)
@@ -184,7 +190,7 @@ for row in reader.readrows():
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPCountry, 'whois_domain_updated_date': whoisQuery.updated_date, 'whois_domain_name_servers': whoisNameServers}
+        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPCountry, 'whois_domain_updated_date': whoisQuery.updated_date, 'whois_domain_name_servers': whoisNameServers, 'id.orig_p': origPORT, 'id.resp_p': respPORT}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
@@ -200,8 +206,8 @@ for row in reader.readrows():
                         "\nprob: "+probStr+
                         "\nuid: "+uid+
                         "\nts: "+tsStr+
-                        "\nid.orig_h: "+origIP+
-                        "\nid.resp_h: "+respIP+
+                        "\nid.orig_h+p: "+origIP+":"+str(origPORT)+
+                        "\nid.resp_h+p: "+respIP+":"+str(respPORT)+
                         "\nqtype_name: "+qtype+
                         "\nanswers: "+answers+
                         "\n[WHOIS Domain] Creation date: "+str(whoisCrDate)+
