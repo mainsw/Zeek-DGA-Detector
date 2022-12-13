@@ -130,7 +130,7 @@ for row in reader.readrows():
         if isinstance(whoisQuery.updated_date, list):
             whoisQuery.update(updated_date=whoisQuery.updated_date[-1])
         if isinstance(whoisQuery.name_servers, list):
-            whoisQuery.update(name_servers=','.join(whoisQuery.name_servers))
+            whoisQuery.update(name_servers=',\n'.join(whoisQuery.name_servers))
 
         # None일 경우 String "None"으로 변환
         def xstr(s):
@@ -197,29 +197,112 @@ for row in reader.readrows():
         response = webhook.send(
             text="DGA Alert",
             blocks=[
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text":"=== DGA Domain Detected ===\n"
-                        +"query: "+query+
-                        "\nprob: "+probStr+
-                        "\nuid: "+uid+
-                        "\nts: "+tsStr+
-                        "\nid.orig_h+p: "+origIP+":"+str(origPORT)+
-                        "\nid.resp_h+p: "+respIP+":"+str(respPORT)+
-                        "\nqtype_name: "+qtype+
-                        "\nanswers: "+answers+
-                        "\n[WHOIS Domain] Creation date: "+str(whoisCrDate)+
-                        "\n[WHOIS Domain] Expiration date: "+str(whoisExDate)+
-                        "\n[WHOIS Domain] Updated date: "+str(whoisUpDate)+
-                        "\n[WHOIS Domain] Registrar: "+str(whoisRegistrar)+
-                        "\n[WHOIS Domain] Name Servers: "+str(whoisNameServers)+
-                        "\n[WHOIS IP] Country: "+str(whoisIPCountry)+
-                        "\n========================="
-                    }
-                }
-            ]
+		{
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "====== DGA Detected ======"
+			}
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*query:*\n"+query
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*prob:*\n"+str(prob)
+				}
+			]
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*uid:*\n"+uid
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*ts:*\n"+str(timestamp)
+				}
+			]
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*id.orig_h+p:*\n"+origIP+":"+str(origPORT)
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*id.resp_h+p:*\n"+respIP+":"+str(respPORT)
+				}
+			]
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*qtype_name:*\n"+qtype
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*answers:*\n"+answers
+				}
+			]
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*Creation Date:*\n"+str(whoisCrDate)
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Expiration Date:*\n"+str(whoisExDate)
+				}
+			]
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*Updated Date:*\n"+str(whoisUpDate)
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*Registrar:*\n"+str(whoisRegistrar)
+				}
+			]
+		},
+		{
+			"type": "section",
+			"fields": [
+				{
+					"type": "mrkdwn",
+					"text": "*Name Servers:*\n"+whoisNameServers
+				},
+				{
+					"type": "mrkdwn",
+					"text": "*IP Country:*\n"+str(whoisIPCountry)
+				}
+			]
+		},
+        {
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "<https://www.virustotal.com/gui/domain/"+query+"|VirusTotal>"
+			}
+		}
+	]
         )
         assert response.status_code == 200
         assert response.body == "ok"
