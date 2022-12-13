@@ -119,31 +119,36 @@ zeekdga.py --txtlog /home/admin/dgalog.txt --webhook https://hooks.slack.com/ser
 Successfully monitoring /opt/zeek/logs/current/dns.log...
 
 =======================
-timestamp: 2022년 11월 27일 04시 21분 49.381923
+timestamp: 2022년 12월 01일 04시 21분 49.381923
 query: naver.com
 prob: 0.0015445054
 uid: CVlJrl2NjOiyAFLdB9
-id.orig: 192.168.0.1
-id.resp: 1.1.1.1
+id.orig_h+p: 192.168.0.1:54212
+id.resp_h+p: 1.1.1.1:53
 qtype_name: -
 answers: 321.456.789.0
 =======================
 
 =======================
-timestamp: 2022년 11월 27일 04시 22분 47.710369
+timestamp: 2022년 12월 01일 04시 22분 47.710369
 query: nbnmep.com
 prob: 0.5765742
 uid: CwYEnU2gvOFRo5rq3k
-id.orig: 192.168.0.1
-id.resp: 1.1.1.1
+id.orig: 192.168.0.1:52323
+id.resp: 1.1.1.1:53
 qtype_name: -
 answers: 123.456.789.0
 =======================
 
 DGA Domain Detected: nbnmep.com
-[WHOIS Domain] Creation Date: 2020년 07월 07일 18시 11분 25.000000
-[WHOIS Domain] Expiration Date: 2023년 07월 07일 18시 11분 25.000000
+[WHOIS Domain] Creation Date: 2020-07-07 18:11:25
+[WHOIS Domain] Expiration Date: 2023-07-07 18:11:25
+[WHOIS Domain] Updated Date: 2022-07-08 07:28:16
 [WHOIS Domain] Registrar: Verisign Security and Stability
+[WHOIS Domain] Name Servers: SC-A.SINKHOLE.SHADOWSERVER.ORG,
+SC-B.SINKHOLE.SHADOWSERVER.ORG,
+SC-C.SINKHOLE.SHADOWSERVER.ORG,
+SC-D.SINKHOLE.SHADOWSERVER.ORG
 [WHOIS IP] Country: US
 
 ```
