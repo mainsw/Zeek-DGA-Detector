@@ -17,7 +17,6 @@ import pprint
 
 
 ##### Configuration START #####
-
 pp = pprint.PrettyPrinter(indent=4)
 
 # Timezone List
@@ -119,8 +118,6 @@ for row in reader.readrows():
         print("DGA Domain Detected: "+query)
         whoisQuery = whois.whois(query)
         whoisIPQuery = whois.whois(answers)
-        # whoisQueryStr = json.dumps(whoisQuery)
-        # print(whoisQuery)
 
         # datetime이 list로 여러개인 경우, 가장 최신 데이터로 변환
         if isinstance(whoisQuery.expiration_date, list):
@@ -129,6 +126,8 @@ for row in reader.readrows():
             whoisQuery.update(creation_date=whoisQuery.creation_date[-1])
         if isinstance(whoisQuery.updated_date, list):
             whoisQuery.update(updated_date=whoisQuery.updated_date[-1])
+
+        # List to String
         if isinstance(whoisQuery.name_servers, list):
             whoisQuery.update(name_servers=',\n'.join(whoisQuery.name_servers))
 
@@ -190,7 +189,23 @@ for row in reader.readrows():
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPCountry, 'whois_domain_updated_date': whoisQuery.updated_date, 'whois_domain_name_servers': whoisNameServers, 'id.orig_p': origPORT, 'id.resp_p': respPORT}
+        doc1 = {
+            'query': query, 
+            'timestamp': tsUTC, 
+            'probability': probStr, 
+            'uid': uid, 
+            'id.orig_h': origIP, 
+            'id.resp_h': respIP, 
+            'qtype_name': qtype, 
+            'answers': answers, 
+            'whois_domain_creation_date': whoisQuery.creation_date, 
+            'whois_domain_expiration_date': whoisQuery.expiration_date, 
+            'whois_domain_registrar': whoisQuery.registrar, 
+            'whois_ip_country': whoisIPCountry, 
+            'whois_domain_updated_date': whoisQuery.updated_date, 
+            'whois_domain_name_servers': whoisNameServers, 
+            'id.orig_p': origPORT, 
+            'id.resp_p': respPORT}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
