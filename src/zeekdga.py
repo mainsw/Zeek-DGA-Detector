@@ -119,15 +119,36 @@ for row in reader.readrows():
         whoisIPQuery = whois.whois(answers)
         # whoisQueryStr = json.dumps(whoisQuery)
         # print(whoisQuery)
-        whoisCrDate = whoisQuery.creation_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
-        whoisExDate = whoisQuery.expiration_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
-        whoisUpDate = whoisQuery.updated_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
-        whoisRegistrar = whoisQuery.registrar
-        print("[WHOIS Domain] Creation Date: "+ whoisCrDate)
-        print("[WHOIS Domain] Expiration Date: "+ whoisExDate)
-        print("[WHOIS Domain] Updated Date: "+ whoisUpDate)
+
+        # datetime이 list로 여러개인 경우, 가장 최신 데이터로 변환
+        if isinstance(whoisQuery.expiration_date, list):
+            whoisQuery.update(expiration_date=whoisQuery.expiration_date[-1])
+        if isinstance(whoisQuery.creation_date, list):
+            whoisQuery.update(creation_date=whoisQuery.creation_date[-1])
+        if isinstance(whoisQuery.updated_date, list):
+            whoisQuery.update(updated_date=whoisQuery.updated_date[-1])
+        if isinstance(whoisQuery.name_servers, list):
+            whoisQuery.update(name_servers=','.join(whoisQuery.name_servers))
+
+        # None일 경우 String "None"으로 변환
+        def xstr(s):
+            if s is None:
+                return 'None'
+            return str(s)
+
+        whoisCrDate = xstr(whoisQuery.creation_date)
+        whoisExDate = xstr(whoisQuery.expiration_date)
+        whoisUpDate = xstr(whoisQuery.updated_date)
+        whoisRegistrar = xstr(whoisQuery.registrar)
+        whoisNameServers = xstr(whoisQuery.name_servers)
+        whoisIPCountry = xstr(whoisIPQuery.country)
+        
+        print(f"[WHOIS Domain] Creation Date: {whoisCrDate}")
+        print(f"[WHOIS Domain] Expiration Date: {whoisExDate}")
+        print(f"[WHOIS Domain] Updated Date: {whoisUpDate}")
         print("[WHOIS Domain] Registrar: "+ whoisRegistrar)
-        print("[WHOIS IP] Country: "+ whoisIPQuery.country)
+        print("[WHOIS Domain] Name Servers: "+ whoisNameServers)
+        print("[WHOIS IP] Country: "+ whoisIPCountry)
         
         # dga.txt에 DGA 탐지 기록
         f = open(dgaTxtPath, "a")
@@ -155,13 +176,15 @@ for row in reader.readrows():
         f.write("\n")
         f.write("[WHOIS Domain] Registrar: "+whoisRegistrar)
         f.write("\n")
-        f.write("[WHOIS IP] Country: "+whoisIPQuery.country)
+        f.write("[WHOIS Domain] Name Servers: "+whoisNameServers)
+        f.write("\n")
+        f.write("[WHOIS IP] Country: "+whoisIPCountry)
         f.write("\n")
         f.write("\n")
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPQuery.country, 'whois_domain_updated_date': whoisQuery.updated_date}
+        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPCountry, 'whois_domain_updated_date': whoisQuery.updated_date, 'whois_domain_name_servers': whoisNameServers}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
@@ -172,7 +195,7 @@ for row in reader.readrows():
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "=== DGA Domain Detected ===\n"
+                        "text":"=== DGA Domain Detected ===\n"
                         +"query: "+query+
                         "\nprob: "+probStr+
                         "\nuid: "+uid+
@@ -181,11 +204,12 @@ for row in reader.readrows():
                         "\nid.resp_h: "+respIP+
                         "\nqtype_name: "+qtype+
                         "\nanswers: "+answers+
-                        "\n[WHOIS Domain] Creation date: "+whoisCrDate+
-                        "\n[WHOIS Domain] Expiration date: "+whoisExDate+
-                        "\n[WHOIS Domain] Updated date: "+whoisUpDate+
-                        "\n[WHOIS Domain] Registrar: "+whoisRegistrar+
-                        "\n[WHOIS IP] Country: "+whoisIPQuery.country+
+                        "\n[WHOIS Domain] Creation date: "+str(whoisCrDate)+
+                        "\n[WHOIS Domain] Expiration date: "+str(whoisExDate)+
+                        "\n[WHOIS Domain] Updated date: "+str(whoisUpDate)+
+                        "\n[WHOIS Domain] Registrar: "+str(whoisRegistrar)+
+                        "\n[WHOIS Domain] Name Servers: "+str(whoisNameServers)+
+                        "\n[WHOIS IP] Country: "+str(whoisIPCountry)+
                         "\n========================="
                     }
                 }
