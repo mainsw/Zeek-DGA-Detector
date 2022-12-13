@@ -125,6 +125,7 @@ for row in reader.readrows():
         whoisRegistrar = whoisQuery.registrar
         print("[WHOIS Domain] Creation Date: "+ whoisCrDate)
         print("[WHOIS Domain] Expiration Date: "+ whoisExDate)
+        print("[WHOIS Domain] Updated Date: "+ whoisUpDate)
         print("[WHOIS Domain] Registrar: "+ whoisRegistrar)
         print("[WHOIS IP] Country: "+ whoisIPQuery.country)
         
