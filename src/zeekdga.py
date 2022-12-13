@@ -121,6 +121,7 @@ for row in reader.readrows():
         # print(whoisQuery)
         whoisCrDate = whoisQuery.creation_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
         whoisExDate = whoisQuery.expiration_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
+        whoisUpDate = whoisQuery.updated_date.strftime("%Y년 %m월 %d일 %H시 %M분 %S.%f")
         whoisRegistrar = whoisQuery.registrar
         print("[WHOIS Domain] Creation Date: "+ whoisCrDate)
         print("[WHOIS Domain] Expiration Date: "+ whoisExDate)
@@ -149,6 +150,8 @@ for row in reader.readrows():
         f.write("\n")
         f.write(f"[WHOIS Domain] Expiration Date: {whoisExDate}")
         f.write("\n")
+        f.write(f"[WHOIS Domain] Updated Date: {whoisUpDate}")
+        f.write("\n")
         f.write("[WHOIS Domain] Registrar: "+whoisRegistrar)
         f.write("\n")
         f.write("[WHOIS IP] Country: "+whoisIPQuery.country)
@@ -157,7 +160,7 @@ for row in reader.readrows():
         f.close()
         
         # Elasticsearch에 DGA 탐지 기록
-        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPQuery.country}
+        doc1 = {'query': query, 'timestamp': tsUTC, 'probability': probStr, 'uid': uid, 'id.orig_h': origIP, 'id.resp_h': respIP, 'qtype_name': qtype, 'answers': answers, 'whois_domain_creation_date': whoisQuery.creation_date, 'whois_domain_expiration_date': whoisQuery.expiration_date, 'whois_domain_registrar': whoisQuery.registrar, 'whois_ip_country': whoisIPQuery.country, 'whois_domain_updated_date': whoisQuery.updated_date}
         es.index(index=index_name, doc_type='string', body=doc1)
         
         # Slack Webhook을 통해 DGA 탐지 경고 알림
@@ -168,7 +171,21 @@ for row in reader.readrows():
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "=== DGA Domain Detected ===\n"+"query: "+query+"\nprob: "+probStr+"\nuid: "+uid+"\nts: "+tsStr+"\nid.orig_h: "+origIP+"\nid.resp_h: "+respIP+"\nqtype_name: "+qtype+"\nanswers: "+answers+"\n[WHOIS Domain] Creation date: "+whoisCrDate+"\n[WHOIS Domain] Expiration date: "+whoisExDate+"\n[WHOIS Domain] Registrar: "+whoisRegistrar+"\n[WHOIS IP] Country: "+whoisIPQuery.country+"\n========================="
+                        "text": "=== DGA Domain Detected ===\n"
+                        +"query: "+query+
+                        "\nprob: "+probStr+
+                        "\nuid: "+uid+
+                        "\nts: "+tsStr+
+                        "\nid.orig_h: "+origIP+
+                        "\nid.resp_h: "+respIP+
+                        "\nqtype_name: "+qtype+
+                        "\nanswers: "+answers+
+                        "\n[WHOIS Domain] Creation date: "+whoisCrDate+
+                        "\n[WHOIS Domain] Expiration date: "+whoisExDate+
+                        "\n[WHOIS Domain] Updated date: "+whoisUpDate+
+                        "\n[WHOIS Domain] Registrar: "+whoisRegistrar+
+                        "\n[WHOIS IP] Country: "+whoisIPQuery.country+
+                        "\n========================="
                     }
                 }
             ]
